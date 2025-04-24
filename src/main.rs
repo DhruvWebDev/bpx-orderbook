@@ -14,21 +14,23 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 use tokio_tungstenite::connect_async;
 use tokio_tungstenite::tungstenite::protocol::Message;
-
+//constants
 const API_BASE: &str = "https://api.backpack.exchange/api/v1";
 const WSS_URL: &str = "wss://ws.backpack.exchange";
 const SYMBOL: &str = "SOL_USDC";
 
+//types 
 type Price = Decimal;
 type Quantity = Decimal;
-
+// Derives Debug trait for logging/printing and Deserialize trait for converting from raw binary/serialized data
 #[derive(Debug, Deserialize)]
 pub struct OrderBook {
-    pub asks: BTreeMap<Decimal, Decimal>,
-    pub bids: BTreeMap<Decimal, Decimal>,
-    pub last_update_id: u64,
-}
+    pub asks: BTreeMap<Decimal, Decimal>,  // Price to quantity mapping for asks (sell orders)
+    pub bids: BTreeMap<Decimal, Decimal>,  // Price to quantity mapping for bids (buy orders)
+    pub last_update_id: u64,              // Sequence number for tracking updates
+} 
 
+//rename to camel case for proper deserialization
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct OrderBookSnapshot {
